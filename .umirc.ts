@@ -4,8 +4,7 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-
-  dynamicImport: {},
+  ssr:{},
   publicPath: '/dist/',
   proxy: {
     "/api": {

@@ -5,7 +5,6 @@ import React from 'react';
 import { List, Avatar, Tag, Icon, Button, Pagination } from 'antd';
 import fetch from 'umi-request';
 import styles from './index.less';
-import Father from '@/components/Father'
 
 class Page extends React.PureComponent {
 
@@ -42,7 +41,6 @@ class Page extends React.PureComponent {
         <Button href="/" type="primary">
           全部
         </Button>
-        <Father/>
         <h1>Github Trending Koa.js</h1>
         <Pagination onChange={this.handleChange} {...data?.pagination}/>
         <List
