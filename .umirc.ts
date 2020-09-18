@@ -4,7 +4,9 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  ssr:{},
+  ssr:{
+    mode: 'stream'
+  },
   publicPath: '/dist/',
   proxy: {
     "/api": {

@@ -2,16 +2,15 @@
  * title: Github Trending using umi ssr
  */
 import React from 'react';
-import { List, Avatar, Tag, Icon, Button, Pagination } from 'antd';
-import fetch from 'umi-request';
+import { List, Avatar,  Pagination } from 'antd';
+import { Helmet } from 'umi';
+import {home} from '@/services';
 import styles from './index.less';
 
 class Page extends React.PureComponent {
 
   state = {
-    data:{
-      ...this.props.data
-    }
+    data: this.props.data
   }
 
   componentWillReceiveProps(nextProps) {
@@ -22,10 +21,12 @@ class Page extends React.PureComponent {
     }
   }
 
+  componentWillMount(){
+    console.log('object')
+  }
+
   handleChange = (current, pageSize)=>{
-    fetch('/api/home',{
-      params: {current, pageSize}
-    }).then(res=>{
+    home({current, pageSize}).then(res=>{
       console.log(res)
       this.setState({
         data: res.data
@@ -35,12 +36,15 @@ class Page extends React.PureComponent {
 
   render() {
     const { data } = this.state;
-    console.log(data,this.props.data)
+    console.log(this.props,'index页面')
     return (
       <div className={styles.normal}>
-        <Button href="/" type="primary">
-          全部
-        </Button>
+        <Helmet encodeSpecialCharacters={false}>
+          <html lang="en" data-direction="666" />
+          <meta name="keywords" content="关键词内容" />
+          <meta name="description" content="描述内容" />
+          <title>Hello Umi Bar Title</title>
+        </Helmet>
         <h1>Github Trending Koa.js</h1>
         <Pagination onChange={this.handleChange} {...data?.pagination}/>
         <List
@@ -65,14 +69,14 @@ class Page extends React.PureComponent {
           )}
         />
       </div>
-    );
+    )
   }
 }
 
-Page.getInitialProps = async (ctx) => {
-    const res = await fetch(ctx.isServer ? 'http://localhost:3333/home' : '/api/home')
+Page.getInitialProps = async ({ store, isServer, history, match, route }) => {
+    const res = await home({isServer})
     return {
-      data: res.data
+      data: res && res.data || {}
     }
 }
 

@@ -1,41 +1,43 @@
 import { useEffect, useState } from 'react';
-import { List, Avatar, Tag, Icon, Button, Pagination } from 'antd';
+import { connect } from 'dva';
+import { List, Avatar, Tag, Icon, Spin, Pagination } from 'antd';
 
-import fetch from 'umi-request';
 
 import styles from './users.less';
 
-function Page(props) {
-  const [data, setData] = useState({});
-  useEffect(()=>{
-    handleChange()
-  },[])
 
+function Page(props) {
+  const { users:{data}, dispatch, loading } = props
   const handleChange = (current, pageSize)=>{
-    fetch('/api/home',{
-      params: {current, pageSize}
-    }).then(res=>{
-      setData(res.data)
+    dispatch({
+      type: 'users/getData',
+      payload: { current, pageSize }
     })
   }
-
-  console.log(data)
-
-
-
   return (
-    <div className={styles.normal}>
-      <h1>Page users</h1>
-      <h2>users ddd</h2>
-      <Pagination onChange={handleChange} {...data?.pagination}/>
-      <ul>
-        {(data.list || []).map(user => (
-          <li key={user.num}>{user.num}</li>
-        ))}
-      </ul>
-    </div>
+    <Spin spinning={loading}>
+      <div className={styles.normal}>
+        <h1>Page users</h1>
+        <ul>
+          {(data?.list || []).map(user => (
+            <li key={user.num}>{user.num}</li>
+          ))}
+        </ul>
+        <Pagination onChange={handleChange} {...data?.pagination}/>
+      </div>
+    </Spin>
   )
 }
 
+Page.getInitialProps = (async ({ store, isServer, history, match, route }) => {
+  await store.dispatch({
+    type: 'users/getData',
+    payload: { isServer }
+  })
+  return {
+    users: store.getState().users
+  }
+})
 
-export default Page;
+
+export default connect(({users, loading})=>({users, loading: loading.models.users}))(Page);

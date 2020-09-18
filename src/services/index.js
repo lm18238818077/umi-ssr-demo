@@ -1,7 +1,8 @@
-import fetch from 'umi-request'
+import fetch from '@/utils/request'
 
 export async function users(params) {
-  return fetch(`/api/users`, {
+  console.log(params,'request1')
+  return fetch(`/users`, {
     method: 'get',
     params,
   });
